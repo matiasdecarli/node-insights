@@ -102,8 +102,6 @@ Insights.prototype.send = function(){
       }, function(err, res, body){
         if (err){
           that.config.logger.error('Error sending to insights', err);
-        } else if (res){
-          that.config.logger.log('Insights response', res.statusCode, body);
         }
       });
     } catch(x){
@@ -120,10 +118,7 @@ function reducer(prefix){
       _.reduce(value, reducer(prefix + key + '.'), insight);
     } else if (_.isBoolean(value) || _.isDate(value)){
       insight[prefix + key] = value.toString();
-    } else {
-      //ignore functions, nulls, undefineds
-      logger.warn('not reducing', prefix, key, value);
-    }
+    } 
     return insight;
   };
 }
@@ -152,7 +147,6 @@ Insights.prototype.add = function(data, eventType){
       insight.timestamp = Date.now();
     }
 
-    that.config.logger.log('Insights data', insight);
     that.data.push(insight);
 
     if (that.data.length >= that.config.maxPending){
